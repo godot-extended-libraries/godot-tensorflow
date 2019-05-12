@@ -87,12 +87,12 @@ Error TensorflowModel::load_model(FileAccess *f) {
 RES TensorflowModelResourceLoader::load(const String &p_path, const String &p_original_path, Error *r_error) {
 	FileAccess *f = FileAccess::open(p_path, FileAccess::READ);
 	if (!f) {
-		return ERR_FILE_CANT_OPEN;
+		return RES();
 	}
 	Ref<TensorflowModel> lib;
 	lib.instance();
 	Error err = lib->load_model(f);
-	ERR_FAIL_COND_V(err != OK, ERR_FILE_CORRUPT);
+	ERR_FAIL_COND_V(err != OK, RES());
 	return lib;
 }
 

@@ -149,6 +149,33 @@ void get_top_n(T *prediction, int prediction_size, size_t num_results,
 	std::reverse(top_results->begin(), top_results->end());
 }
 
+template <class T>
+void get_top_n(T *prediction, int prediction_size, size_t num_results,
+               float threshold, std::vector<std::pair<float, int> > *top_results,
+               bool input_floating);
+
+// explicit instantiation so that we can use them otherwhere
+template void get_top_n<uint8_t>(uint8_t *, int, size_t,
+                                 float, std::vector<std::pair<float, int> > *,
+                                 bool);
+template void get_top_n<float>(float *, int, size_t,
+                               float, std::vector<std::pair<float, int> > *,
+                               bool);
+
+template <class T>
+void resize(T *out, uint8_t *in, int image_height, int image_width,
+            int image_channels, int wanted_height, int wanted_width,
+            int wanted_channels, bool floating);
+
+// explicit instantiation
+template void resize<uint8_t>(uint8_t *, uint8_t *, int, int,
+                              int, int, int,
+                              int, bool);
+template void resize<float>(float *, uint8_t *,  int , int,
+                            int, int, int,
+                            int, bool);
+
+
 void TensorflowAiInstance::set_labels(PoolStringArray p_string) {
 	labels = p_string;
 }

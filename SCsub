@@ -130,25 +130,23 @@ if (env["platform"] != "windows"):
     source.append(['#thirdparty/tensorflow/tensorflow/lite/nnapi_delegate.cc'])
     source.append(['#thirdparty/tensorflow/tensorflow/lite/mmap_allocation.cc'])
 
-env_tensorflow.add_source_files(env.modules_sources, source)
-
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/core/'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/googletest/googlemock/include'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/googletest/googletest/include'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/absl'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/eigen'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/farmhash/src'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/gemmlowp'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/fft2d'])
-env_tensorflow.Append(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/schema'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include'])
+#env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/core'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/googletest/googlemock/include'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/googletest/googletest/include'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/absl'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/eigen'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/farmhash/src'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/gemmlowp'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/fft2d'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/schema'])
+env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow'])
 
 if (not env.msvc):
     env_tensorflow.Append(CXXFLAGS="-std=c++11")
 
-env_tensorflow.Append(CXXFLAGS=['-DTF_COMPILE_LIBRARY'])
+#env_tensorflow.Append(CXXFLAGS=['-DTF_COMPILE_LIBRARY'])
 env_tensorflow.Append(CXXFLAGS=['-DFARMHASH_CAN_USE_CXX11'])
 env_tensorflow.Append(CXXFLAGS=['-DFARMHASH_OPTIONAL_BUILTIN_EXPECT'])
 #env_tensorflow.Append(CXXFLAGS=['-DTFLITE_MCU'])
@@ -158,6 +156,10 @@ if (env.msvc):
     env_tensorflow.Append(CXXFLAGS=['-DCOMPILER_MSVC'])
     env_tensorflow.Append(CXXFLAGS=['-DTENSORFLOW_USE_EIGEN_THREADPOOL'])
     env_tensorflow.Append(CXXFLAGS=['-DEIGEN_HAS_C99_MATH'])
+
+env_thirdparty = env_tensorflow.Clone()
+env_thirdparty.disable_warnings()
+env_thirdparty.add_source_files(env.modules_sources, source)
 
 # Godot's own source files
 env_tensorflow.add_source_files(env.modules_sources, "*.cpp")
