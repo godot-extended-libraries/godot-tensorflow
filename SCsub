@@ -145,10 +145,6 @@ Glob('#thirdparty/tensorflow/tensorflow/lite/c/*.c'),
 '#thirdparty/tensorflow/tensorflow/lite/minimal_logging.cc',
 ]
 
-if (env["platform"] != "windows"):
-    source.append(['#thirdparty/tensorflow/tensorflow/lite/nnapi_delegate.cc'])
-    source.append(['#thirdparty/tensorflow/tensorflow/lite/mmap_allocation.cc'])
-
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include'])
 #env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite'])
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/core'])
@@ -173,7 +169,11 @@ env_tensorflow.Append(CXXFLAGS=['-DFARMHASH_OPTIONAL_BUILTIN_EXPECT'])
 
 if (env.msvc):
     env_tensorflow.Append(CXXFLAGS=['-DEIGEN_AVOID_STL_ARRAY'])
-    env_tensorflow.Append(CXXFLAGS=['-DCOMPILER_MSVC'])
+    env_tensorflow.Append(CXXFLAGS=['-D_WIN32'])
+    env_tensorflow.Append(CXXFLAGS=['-DTENSORFLOW_USE_EIGEN_THREADPOOL'])
+    env_tensorflow.Append(CXXFLAGS=['-DEIGEN_HAS_C99_MATH'])
+else:
+    env_tensorflow.Append(CXXFLAGS=['-DEIGEN_AVOID_STL_ARRAY'])
     env_tensorflow.Append(CXXFLAGS=['-DTENSORFLOW_USE_EIGEN_THREADPOOL'])
     env_tensorflow.Append(CXXFLAGS=['-DEIGEN_HAS_C99_MATH'])
 
