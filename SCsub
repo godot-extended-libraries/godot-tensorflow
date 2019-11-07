@@ -146,7 +146,6 @@ Glob('#thirdparty/tensorflow/tensorflow/lite/c/*.c'),
 ]
 
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include'])
-#env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite'])
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/core'])
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/googletest/googlemock/include'])
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/googletest/googletest/include'])
@@ -157,9 +156,6 @@ env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/ma
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/tools/make/downloads/fft2d'])
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow/tensorflow/lite/schema'])
 env_tensorflow.Prepend(CPPPATH=['#thirdparty/tensorflow'])
-
-if (not env.msvc):
-    env_tensorflow.Append(CXXFLAGS="-std=c++11")
 
 #env_tensorflow.Append(CXXFLAGS=['-DTF_COMPILE_LIBRARY'])
 env_tensorflow.Append(CXXFLAGS=['-DFARMHASH_CAN_USE_CXX11'])
