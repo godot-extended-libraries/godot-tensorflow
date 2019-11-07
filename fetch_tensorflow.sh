@@ -1,5 +1,5 @@
 rm -rf ../../thirdparty/tensorflow/
-git clone https://github.com/tensorflow/tensorflow.git -b v2.0.0-beta1 ../../thirdparty/tensorflow/
+git clone https://github.com/tensorflow/tensorflow.git -b v2.0.0 ../../thirdparty/tensorflow/
 rm -rf ../../thirdparty/tensorflow/tools/
 rm -rf ../../thirdparty/tensorflow/.git/
 rm -rf ../../thirdparty/tensorflow/.github/
