@@ -287,8 +287,7 @@ void TensorflowAiInstance::allocate_tensor_buffers() {
 	print_verbose("number of outputs: " + itos(outputs.size()));
 
 	if (interpreter->AllocateTensors() != kTfLiteOk) {
-		ERR_EXPLAIN("Tensorflow can't allocate tensors");
-		ERR_FAIL();
+		ERR_FAIL_MSG("Tensorflow can't allocate tensors");
 	}
 
 	// get input dimension from the input tensor metadata
@@ -304,8 +303,7 @@ void TensorflowAiInstance::allocate_tensor_buffers() {
 	} else if (wanted_channels == 4) {
 		img->convert(Image::FORMAT_RGBA8);
 	} else {
-		ERR_EXPLAIN("Tensorflow: invalid image format");
-		ERR_FAIL();
+		ERR_FAIL_MSG("Tensorflow: invalid image format");
 	}
 	switch (interpreter->tensor(input)->type) {
 		case kTfLiteFloat32: {
@@ -323,14 +321,12 @@ void TensorflowAiInstance::allocate_tensor_buffers() {
 			break;
 		}
 		default: {
-			ERR_EXPLAIN("Tensorflow: cannot handle input type " + itos(interpreter->tensor(input)->type) + " yet");
-			ERR_FAIL();
+			ERR_FAIL_MSG("Tensorflow: cannot handle input type " + itos(interpreter->tensor(input)->type) + " yet");
 		}
 	}
 
 	if (interpreter->Invoke() != kTfLiteOk) {
-		ERR_EXPLAIN("Tensorflow can't invoke");
-		ERR_FAIL();
+		ERR_FAIL_MSG("Tensorflow can't invoke");
 	}
 
 	const float threshold = 0.001f;
@@ -353,8 +349,7 @@ void TensorflowAiInstance::allocate_tensor_buffers() {
 					&top_results, false);
 			break;
 		default:
-			ERR_EXPLAIN("Tensorflow: cannot handle input type " + itos(interpreter->tensor(input)->type) + " yet");
-			ERR_FAIL();
+			ERR_FAIL_MSG("Tensorflow: cannot handle input type " + itos(interpreter->tensor(input)->type) + " yet");
 	}
 
 	for (const auto &result : top_results) {
