@@ -34,14 +34,10 @@
 #include "loader_tflite.h"
 #include "tensorflow.h"
 
-Ref<TensorflowModelResourceLoader> resource_loader_tfmodel;
-
 void register_tensorflow_types() {
 	ClassDB::register_virtual_class<AiInstance>();
 	ClassDB::register_class<TensorflowAiInstance>();
 	ClassDB::register_class<TensorflowModel>();
-	resource_loader_tfmodel.instance();
-	ResourceLoader::add_resource_format_loader(resource_loader_tfmodel);
 }
 
 void unregister_tensorflow_types() {

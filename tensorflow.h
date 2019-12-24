@@ -49,6 +49,7 @@ class AiInstance : public Node {
 class TensorflowAiInstance : public AiInstance {
 	GDCLASS(TensorflowAiInstance, AiInstance);
 
+	String label_path;
 protected:
 	static void _bind_methods();
 	std::unique_ptr<tflite::FlatBufferModel> model;
@@ -59,6 +60,8 @@ protected:
 	void _notification(int p_notification);
 
 public:
+	void set_label_path(String p_path);
+	String get_label_path() const;
 	void set_labels(PoolStringArray p_string);
 	PoolStringArray get_labels();
 	void set_texture(Ref<Texture> p_texture);

@@ -151,30 +151,29 @@ void get_top_n(T *prediction, int prediction_size, size_t num_results,
 
 template <class T>
 void get_top_n(T *prediction, int prediction_size, size_t num_results,
-               float threshold, std::vector<std::pair<float, int> > *top_results,
-               bool input_floating);
+		float threshold, std::vector<std::pair<float, int> > *top_results,
+		bool input_floating);
 
 // explicit instantiation so that we can use them otherwhere
 template void get_top_n<uint8_t>(uint8_t *, int, size_t,
-                                 float, std::vector<std::pair<float, int> > *,
-                                 bool);
+		float, std::vector<std::pair<float, int> > *,
+		bool);
 template void get_top_n<float>(float *, int, size_t,
-                               float, std::vector<std::pair<float, int> > *,
-                               bool);
+		float, std::vector<std::pair<float, int> > *,
+		bool);
 
 template <class T>
 void resize(T *out, uint8_t *in, int image_height, int image_width,
-            int image_channels, int wanted_height, int wanted_width,
-            int wanted_channels, bool floating);
+		int image_channels, int wanted_height, int wanted_width,
+		int wanted_channels, bool floating);
 
 // explicit instantiation
 template void resize<uint8_t>(uint8_t *, uint8_t *, int, int,
-                              int, int, int,
-                              int, bool);
-template void resize<float>(float *, uint8_t *,  int , int,
-                            int, int, int,
-                            int, bool);
-
+		int, int, int,
+		int, bool);
+template void resize<float>(float *, uint8_t *, int, int,
+		int, int, int,
+		int, bool);
 
 void TensorflowAiInstance::set_labels(PoolStringArray p_string) {
 	labels = p_string;
@@ -220,17 +219,25 @@ void TensorflowAiInstance::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_texture"), &TensorflowAiInstance::get_texture);
 	ClassDB::bind_method(D_METHOD("set_labels", "label"), &TensorflowAiInstance::set_labels);
 	ClassDB::bind_method(D_METHOD("get_labels"), &TensorflowAiInstance::get_labels);
+	ClassDB::bind_method(D_METHOD("set_label_path", "label"), &TensorflowAiInstance::set_label_path);
+	ClassDB::bind_method(D_METHOD("get_label_path"), &TensorflowAiInstance::get_label_path);
 
-	ADD_PROPERTY(PropertyInfo(Variant::POOL_STRING_ARRAY, "labels"), "set_labels", "get_labels");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "label_path"), "set_label_path", "get_label_path");
+	ADD_PROPERTY(PropertyInfo(Variant::POOL_STRING_ARRAY, "labels",PROPERTY_HINT_NONE, "", PROPERTY_USAGE_INTERNAL), "set_labels", "get_labels");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "set_texture", "get_texture");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "tensorflow_model", PROPERTY_HINT_RESOURCE_TYPE, "TensorflowModel"), "set_tensorflow_model", "get_tensorflow_model");
 }
-
+void TensorflowAiInstance::set_label_path(String p_path) {
+	label_path = p_path;
+}
+String TensorflowAiInstance::get_label_path() const {
+	return label_path;
+}
 void TensorflowAiInstance::_notification(int p_notification) {
 	if (p_notification == Node::NOTIFICATION_READY && !Engine::get_singleton()->is_editor_hint()) {
 		Ref<_File> file;
 		file.instance();
-		file->open("res://labels.txt", _File::READ);
+		file->open(get_label_path(), _File::READ);
 		PoolStringArray l;
 		while (!file->eof_reached()) {
 			l.push_back(file->get_line());
@@ -290,14 +297,15 @@ void TensorflowAiInstance::allocate_tensor_buffers() {
 		ERR_FAIL_MSG("Tensorflow can't allocate tensors");
 	}
 
+	TfLiteIntArray *dims = interpreter->tensor(input)->dims;
 	// get input dimension from the input tensor metadata
 	// assuming one input only
-	TfLiteIntArray *dims = interpreter->tensor(input)->dims;
 	int32_t wanted_height = dims->data[1];
 	int32_t wanted_width = dims->data[2];
 	int32_t wanted_channels = dims->data[3];
-	wanted_height = wanted_width * img->get_height() / img->get_width();
+	wanted_height = real_t(wanted_width) * real_t(img->get_height()) / real_t(img->get_width());
 	img->resize(wanted_width, wanted_height);
+
 	if (wanted_channels == 3) {
 		img->convert(Image::FORMAT_RGB8);
 	} else if (wanted_channels == 4) {

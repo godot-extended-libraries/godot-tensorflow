@@ -32,15 +32,16 @@
 #define LOADER_TFLITE_H
 #include "core/io/resource_importer.h"
 #include "core/io/resource_loader.h"
+#include "core/io/resource_saver.h"
 #include "core/os/file_access.h"
 #include "core/resource.h"
-#include "core/io/resource_saver.h"
 
 class TensorflowModel : public Resource {
 	GDCLASS(TensorflowModel, Resource);
-	RES_BASE_EXTENSION("tflite");
+
 private:
 	Vector<uint8_t> data;
+	String path;
 
 protected:
 	static void _bind_methods();
@@ -48,17 +49,8 @@ protected:
 public:
 	void set_data(const PoolVector<uint8_t> &p_data);
 	PoolVector<uint8_t> get_data() const;
-	Error load_model(FileAccess *f);
-};
-
-class TensorflowModelResourceLoader : public ResourceFormatLoader {
-	GDCLASS(TensorflowModelResourceLoader, ResourceFormatLoader)
-public:
-	virtual RES load(const String &p_path, const String &p_original_path, Error *r_error);
-	virtual void get_recognized_extensions(List<String> *p_extensions) const;
-	virtual bool handles_type(const String &p_type) const;
-	virtual String get_resource_type(const String &p_path) const;
-
+	Error load_model(String p_path);
+	String get_model();
 };
 
 #endif
